@@ -1,0 +1,18 @@
+[project]
+name = "quant-factor-lab"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["pandas>=2.0", "numpy>=1.24"]
+
+[project.optional-dependencies]
+data = ["akshare>=1.16", "yfinance>=0.2.54"]
+
+[project.scripts]
+quant-factor = "quant_factor_lab.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

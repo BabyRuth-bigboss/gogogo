@@ -1,0 +1,56 @@
+{
+  "result": {
+    "strategy_id": "rs612_top2_month_start_3",
+    "strategy_label": "RS612 Top2｜月初第3日",
+    "variant_id": "momentum_baseline",
+    "variant_label": "纯动量基线",
+    "factor_weights": {
+      "momentum": 1.0
+    },
+    "metrics": {
+      "start": "2021-07-13",
+      "end": "2026-07-10",
+      "start_equity": 996481.7561053411,
+      "end_equity": 2571504.979069816,
+      "total_return": 1.5805841033360317,
+      "cagr": 0.2091784642819836,
+      "volatility": 0.2358359576402564,
+      "sharpe": 0.9555043417148513,
+      "max_drawdown": -0.18489116214551637,
+      "max_dd_start": "2024-11-07",
+      "max_dd_end": "2025-01-06",
+      "avg_exposure": 0.34710743801652894,
+      "trading_days": 1210,
+      "yearly": {
+        "2021": 0.06812639480961713,
+        "2022": 0.061367994249649005,
+        "2023": -0.02671362446856118,
+        "2024": -0.006357271077750193,
+        "2025": 0.517102028107358,
+        "2026": 0.5757495666325456
+      }
+    },
+    "trade_count": 67,
+    "latest_positions": "半导体设备(159516);科创芯片(588200)"
+  },
+  "config": {
+    "id": "rs612_top2_month_start_3_momentum_baseline",
+    "label": "RS612 Top2｜月初第3日｜纯动量基线",
+    "model": "rs612",
+    "top_n": 2,
+    "filter": "etf_ma200_ret12_pos",
+    "weighting": "equal",
+    "schedule": "month_start_3",
+    "fee_rate": 0.00105,
+    "factor_weights": {
+      "momentum": 1.0
+    },
+    "start_date": "2021-07-10"
+  },
+  "gate": {
+    "id": "majority_below_ma120",
+    "label": "2/3指数低于MA120空仓",
+    "ma": "ma120",
+    "rule": "沪深300、创业板指、科创50中至少2个收盘低于MA120，则次日开盘清仓并保持现金；恢复后等下一次月初调仓再开仓。"
+  }
+}

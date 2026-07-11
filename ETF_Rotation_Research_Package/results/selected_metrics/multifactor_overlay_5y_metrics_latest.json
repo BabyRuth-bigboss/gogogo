@@ -1,0 +1,427 @@
+{
+  "results": [
+    {
+      "strategy_id": "rs612_top2_month_start_3",
+      "strategy_label": "RS612 Top2｜月初第3日",
+      "variant_id": "momentum_baseline",
+      "variant_label": "纯动量基线",
+      "factor_weights": {
+        "momentum": 1.0
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 996481.7561053411,
+        "end_equity": 2571504.979069816,
+        "total_return": 1.5805841033360317,
+        "cagr": 0.2091784642819836,
+        "volatility": 0.2358359576402564,
+        "sharpe": 0.9555043417148513,
+        "max_drawdown": -0.18489116214551637,
+        "max_dd_start": "2024-11-07",
+        "max_dd_end": "2025-01-06",
+        "avg_exposure": 0.34710743801652894,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": 0.06812639480961713,
+          "2022": 0.061367994249649005,
+          "2023": -0.02671362446856118,
+          "2024": -0.006357271077750193,
+          "2025": 0.517102028107358,
+          "2026": 0.5757495666325456
+        }
+      },
+      "trade_count": 67,
+      "latest_positions": "半导体设备(159516);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs612_top2_month_start_3",
+      "strategy_label": "RS612 Top2｜月初第3日",
+      "variant_id": "lowvol20",
+      "variant_label": "动量80%+低波20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "lowvol": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 996481.7561053411,
+        "end_equity": 2221695.7519231923,
+        "total_return": 1.2295398167714473,
+        "cagr": 0.1742679415782944,
+        "volatility": 0.22667706562764206,
+        "sharpe": 0.8500885736674996,
+        "max_drawdown": -0.1803897083700201,
+        "max_dd_start": "2024-11-07",
+        "max_dd_end": "2025-01-13",
+        "avg_exposure": 0.3468895816195086,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": 0.06812639480961713,
+          "2022": 0.061367994249649005,
+          "2023": -0.02671362446856118,
+          "2024": -0.010129066101654649,
+          "2025": 0.34646483647555226,
+          "2026": 0.5014555596208219
+        }
+      },
+      "trade_count": 78,
+      "latest_positions": "半导体设备(159516);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs612_top2_month_start_3",
+      "strategy_label": "RS612 Top2｜月初第3日",
+      "variant_id": "trend_quality20",
+      "variant_label": "动量80%+趋势质量20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "trend_quality": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 996481.7561053411,
+        "end_equity": 2571504.979069816,
+        "total_return": 1.5805841033360317,
+        "cagr": 0.2091784642819836,
+        "volatility": 0.2358359576402564,
+        "sharpe": 0.9555043417148513,
+        "max_drawdown": -0.18489116214551637,
+        "max_dd_start": "2024-11-07",
+        "max_dd_end": "2025-01-06",
+        "avg_exposure": 0.34710743801652894,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": 0.06812639480961713,
+          "2022": 0.061367994249649005,
+          "2023": -0.02671362446856118,
+          "2024": -0.006357271077750193,
+          "2025": 0.517102028107358,
+          "2026": 0.5757495666325456
+        }
+      },
+      "trade_count": 67,
+      "latest_positions": "半导体设备(159516);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs612_top2_month_start_3",
+      "strategy_label": "RS612 Top2｜月初第3日",
+      "variant_id": "high_proximity20",
+      "variant_label": "动量80%+近高点20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "high_proximity": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 996481.7561053411,
+        "end_equity": 1941771.7592030847,
+        "total_return": 0.948627506029136,
+        "cagr": 0.1430074734934852,
+        "volatility": 0.22466785258940553,
+        "sharpe": 0.7306389795060151,
+        "max_drawdown": -0.15460188826039,
+        "max_dd_start": "2024-11-07",
+        "max_dd_end": "2024-11-26",
+        "avg_exposure": 0.34683929326922863,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": 0.06812639480961713,
+          "2022": 0.061367994249649005,
+          "2023": -0.02671362446856118,
+          "2024": 0.010065247950110878,
+          "2025": 0.29013134572396937,
+          "2026": 0.3429566235295134
+        }
+      },
+      "trade_count": 81,
+      "latest_positions": "半导体设备(159516);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs612_top2_month_start_3",
+      "strategy_label": "RS612 Top2｜月初第3日",
+      "variant_id": "liquidity20",
+      "variant_label": "动量80%+流动性20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "liquidity": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 977341.1227940716,
+        "end_equity": 3040154.778474821,
+        "total_return": 2.110638350899914,
+        "cagr": 0.25529451864289365,
+        "volatility": 0.2375575333355467,
+        "sharpe": 1.1141573028854428,
+        "max_drawdown": -0.16875131625752393,
+        "max_dd_start": "2025-10-29",
+        "max_dd_end": "2025-11-24",
+        "avg_exposure": 0.34706209189745196,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": 0.07730807136043816,
+          "2022": 0.061367994249649005,
+          "2023": 0.05712052477460694,
+          "2024": 0.04439384984897421,
+          "2025": 0.5478282408544315,
+          "2026": 0.6169844331488488
+        }
+      },
+      "trade_count": 62,
+      "latest_positions": "半导体设备(159516);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs612_top2_month_start_3",
+      "strategy_label": "RS612 Top2｜月初第3日",
+      "variant_id": "balanced_multi",
+      "variant_label": "动量60%+低波15%+趋势质量15%+近高点10%",
+      "factor_weights": {
+        "momentum": 0.6,
+        "lowvol": 0.15,
+        "trend_quality": 0.15,
+        "high_proximity": 0.1
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 995918.640949145,
+        "end_equity": 1874955.7686857744,
+        "total_return": 0.8826394964340427,
+        "cagr": 0.13514516265223708,
+        "volatility": 0.2128335107943313,
+        "sharpe": 0.7252806689270498,
+        "max_drawdown": -0.1792604581013486,
+        "max_dd_start": "2024-11-07",
+        "max_dd_end": "2025-01-13",
+        "avg_exposure": 0.3470227877310572,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": 0.001976643143730916,
+          "2022": 0.061367994249649005,
+          "2023": -0.026713624468561292,
+          "2024": -0.0024723427478104965,
+          "2025": 0.3810126943321681,
+          "2026": 0.3087777711251265
+        }
+      },
+      "trade_count": 78,
+      "latest_positions": "半导体设备(159516);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs36_top3_month_start",
+      "strategy_label": "RS36 Top3｜月初",
+      "variant_id": "momentum_baseline",
+      "variant_label": "纯动量基线",
+      "factor_weights": {
+        "momentum": 1.0
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 969993.085519945,
+        "end_equity": 2071870.657166101,
+        "total_return": 1.1359643569577789,
+        "cagr": 0.16422338570834927,
+        "volatility": 0.23067914582034293,
+        "sharpe": 0.800979129777305,
+        "max_drawdown": -0.22275294419883773,
+        "max_dd_start": "2021-07-30",
+        "max_dd_end": "2025-01-06",
+        "avg_exposure": 0.3748190529365597,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.02528498569272286,
+          "2022": -0.016340946588187633,
+          "2023": 0.01564950001544063,
+          "2024": -0.06216154714400668,
+          "2025": 0.49398577913132224,
+          "2026": 0.6131424981361369
+        }
+      },
+      "trade_count": 120,
+      "latest_positions": "半导体设备(159516);半导体(512480);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs36_top3_month_start",
+      "strategy_label": "RS36 Top3｜月初",
+      "variant_id": "lowvol20",
+      "variant_label": "动量80%+低波20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "lowvol": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 969993.085519945,
+        "end_equity": 1871819.2930075768,
+        "total_return": 0.9297243670600253,
+        "cagr": 0.14077724819272475,
+        "volatility": 0.23108605608853855,
+        "sharpe": 0.7084121823822062,
+        "max_drawdown": -0.26325806045529665,
+        "max_dd_start": "2021-07-30",
+        "max_dd_end": "2025-01-06",
+        "avg_exposure": 0.37506956769212957,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.02528498569272286,
+          "2022": -0.016340946588187633,
+          "2023": 0.05867008446226363,
+          "2024": -0.14732438125101655,
+          "2025": 0.40336183607219067,
+          "2026": 0.6322341419100017
+        }
+      },
+      "trade_count": 127,
+      "latest_positions": "半导体设备(159516);半导体(512480);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs36_top3_month_start",
+      "strategy_label": "RS36 Top3｜月初",
+      "variant_id": "trend_quality20",
+      "variant_label": "动量80%+趋势质量20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "trend_quality": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 969993.085519945,
+        "end_equity": 2178192.568371224,
+        "total_return": 1.2455753560383873,
+        "cagr": 0.17595524737993817,
+        "volatility": 0.22959574913385547,
+        "sharpe": 0.8492048002865418,
+        "max_drawdown": -0.18794899283846023,
+        "max_dd_start": "2021-07-30",
+        "max_dd_end": "2024-10-15",
+        "avg_exposure": 0.3748270916887387,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.02528498569272286,
+          "2022": -0.016340946588187633,
+          "2023": 0.05687646388475076,
+          "2024": -0.03597168668468098,
+          "2025": 0.4644541598412817,
+          "2026": 0.6104986583401231
+        }
+      },
+      "trade_count": 118,
+      "latest_positions": "半导体设备(159516);半导体(512480);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs36_top3_month_start",
+      "strategy_label": "RS36 Top3｜月初",
+      "variant_id": "high_proximity20",
+      "variant_label": "动量80%+近高点20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "high_proximity": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 969993.085519945,
+        "end_equity": 2163666.454144438,
+        "total_return": 1.2305998737966761,
+        "cagr": 0.1743797828799425,
+        "volatility": 0.2339211554721481,
+        "sharpe": 0.8318018002502923,
+        "max_drawdown": -0.2085845427476708,
+        "max_dd_start": "2021-07-30",
+        "max_dd_end": "2025-01-06",
+        "avg_exposure": 0.3750705425785974,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.02528498569272286,
+          "2022": -0.016340946588187633,
+          "2023": 0.05867008446226363,
+          "2024": -0.07622762008158979,
+          "2025": 0.598202375299407,
+          "2026": 0.5309006648237671
+        }
+      },
+      "trade_count": 126,
+      "latest_positions": "半导体设备(159516);半导体(512480);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs36_top3_month_start",
+      "strategy_label": "RS36 Top3｜月初",
+      "variant_id": "liquidity20",
+      "variant_label": "动量80%+流动性20%",
+      "factor_weights": {
+        "momentum": 0.8,
+        "liquidity": 0.2
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 969993.085519945,
+        "end_equity": 2152503.34625184,
+        "total_return": 1.2190914331085505,
+        "cagr": 0.17316330376266098,
+        "volatility": 0.23127723335234743,
+        "sharpe": 0.833799611846051,
+        "max_drawdown": -0.2279292578306643,
+        "max_dd_start": "2021-07-30",
+        "max_dd_end": "2024-10-15",
+        "avg_exposure": 0.3749812445136257,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.0413353200072647,
+          "2022": -0.01634094658818752,
+          "2023": 0.01564950001544063,
+          "2024": -0.013610698860252235,
+          "2025": 0.5011352024562965,
+          "2026": 0.6115901486313828
+        }
+      },
+      "trade_count": 110,
+      "latest_positions": "半导体设备(159516);半导体(512480);科创芯片(588200)"
+    },
+    {
+      "strategy_id": "rs36_top3_month_start",
+      "strategy_label": "RS36 Top3｜月初",
+      "variant_id": "balanced_multi",
+      "variant_label": "动量60%+低波15%+趋势质量15%+近高点10%",
+      "factor_weights": {
+        "momentum": 0.6,
+        "lowvol": 0.15,
+        "trend_quality": 0.15,
+        "high_proximity": 0.1
+      },
+      "metrics": {
+        "start": "2021-07-13",
+        "end": "2026-07-10",
+        "start_equity": 969993.085519945,
+        "end_equity": 1661919.8786752117,
+        "total_return": 0.7133316757452692,
+        "cagr": 0.11391400991866951,
+        "volatility": 0.22875261195626317,
+        "sharpe": 0.6050307506334324,
+        "max_drawdown": -0.26782530960370854,
+        "max_dd_start": "2021-07-30",
+        "max_dd_end": "2025-01-06",
+        "avg_exposure": 0.3751450086729407,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.02968355994697902,
+          "2022": -0.016340946588187744,
+          "2023": 0.05687646388475076,
+          "2024": -0.14732438125101655,
+          "2025": 0.3808664666606316,
+          "2026": 0.4804906621011409
+        }
+      },
+      "trade_count": 130,
+      "latest_positions": "半导体设备(159516);半导体(512480);科创芯片(588200)"
+    }
+  ],
+  "errors": {}
+}
