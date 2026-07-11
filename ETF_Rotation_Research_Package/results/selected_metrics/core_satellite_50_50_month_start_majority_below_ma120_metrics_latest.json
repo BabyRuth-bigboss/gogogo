@@ -1,0 +1,42 @@
+{
+  "metrics": {
+    "start": "2021-07-12",
+    "end": "2026-07-09",
+    "start_equity": 1013331.6776751125,
+    "end_equity": 1456247.3477289989,
+    "total_return": 0.4370885464373009,
+    "cagr": 0.0753574721921293,
+    "volatility": 0.145612216543646,
+    "sharpe": 0.5920406291814423,
+    "max_drawdown": -0.15574732324115015,
+    "max_dd_start": "2021-08-04",
+    "max_dd_end": "2024-10-15",
+    "avg_exposure": 0.34131190259100597,
+    "trading_days": 1210,
+    "yearly": {
+      "2021": -0.03764933202670784,
+      "2022": -0.012494934149621884,
+      "2023": 0.010196860985107525,
+      "2024": -0.01492608467908374,
+      "2025": 0.23103628305321,
+      "2026": 0.2329151851291953
+    }
+  },
+  "config": {
+    "id": "core_satellite_50_50_month_start_majority_below_ma120",
+    "label": "核心卫星50/50｜无闸门/月初",
+    "model": "core_satellite",
+    "top_n": 2,
+    "filter": "etf_ma120_ret6_pos",
+    "weighting": "core_satellite",
+    "schedule": "month_start",
+    "fee_rate": 0.00105,
+    "start_date": "2021-07-09"
+  },
+  "gate": {
+    "id": "majority_below_ma120",
+    "label": "2/3指数低于MA120空仓",
+    "rule": "沪深300、创业板指、科创50中至少2个收盘低于MA120，则次日开盘清仓并保持现金；恢复后等下一次策略调仓再开仓。"
+  },
+  "errors": {}
+}

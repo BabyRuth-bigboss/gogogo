@@ -1,0 +1,3 @@
+# ETF strategy scripts use only the Python standard library.
+# Needed only for PDF report generation.
+reportlab>=4.0

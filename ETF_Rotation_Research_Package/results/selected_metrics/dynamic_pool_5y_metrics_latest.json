@@ -1,0 +1,599 @@
+{
+  "results": [
+    {
+      "id": "rs612_top2_month_start_3",
+      "label": "RS612 Top2｜月初第3日",
+      "metrics": {
+        "start": "2021-07-12",
+        "end": "2026-07-09",
+        "start_equity": 1024111.7941717443,
+        "end_equity": 2295596.638294056,
+        "total_return": 1.2415488732366682,
+        "cagr": 0.17553247740246358,
+        "volatility": 0.3286693621285784,
+        "sharpe": 0.6762041775775408,
+        "max_drawdown": -0.4120168959572864,
+        "max_dd_start": "2021-09-15",
+        "max_dd_end": "2023-10-26",
+        "avg_exposure": 0.9695753167857593,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.07279773156641967,
+          "2022": -0.20091543629788655,
+          "2023": 0.007306502218200617,
+          "2024": 0.06358319527487843,
+          "2025": 0.5754565743206894,
+          "2026": 0.8479873232088715
+        }
+      },
+      "trade_count": 102,
+      "latest_positions": "半导体设备(159516);科创芯片(588200)",
+      "selected_counts": {
+        "能源": 14,
+        "有色金属": 12,
+        "通信": 12,
+        "纳指": 12,
+        "标普500": 10,
+        "科创芯片": 10,
+        "香港证券": 10,
+        "新能源车": 8,
+        "游戏": 7,
+        "港股创新药": 4,
+        "光伏": 3,
+        "红利": 2,
+        "软件": 2,
+        "传媒": 2,
+        "半导体设备": 2,
+        "房地产": 1,
+        "银行": 1,
+        "证券保险": 1,
+        "稀土": 1,
+        "工业母机": 1
+      }
+    },
+    {
+      "id": "core_satellite_50_50_month_start",
+      "label": "核心卫星50/50｜无闸门/月初",
+      "metrics": {
+        "start": "2021-07-12",
+        "end": "2026-07-09",
+        "start_equity": 1013331.6776751125,
+        "end_equity": 1332946.598927929,
+        "total_return": 0.31540997710257046,
+        "cagr": 0.056463940452437855,
+        "volatility": 0.2041304543435511,
+        "sharpe": 0.38212229607235354,
+        "max_drawdown": -0.3956214056708448,
+        "max_dd_start": "2021-08-04",
+        "max_dd_end": "2023-02-17",
+        "avg_exposure": 0.8674396534226206,
+        "trading_days": 1210,
+        "yearly": {
+          "2021": -0.14348467786034702,
+          "2022": -0.2531121488727147,
+          "2023": 0.025209157615258215,
+          "2024": 0.2336320365983653,
+          "2025": 0.3125991879204597,
+          "2026": 0.23680841982693757
+        }
+      },
+      "trade_count": 178,
+      "latest_positions": "半导体设备(159516);纳指(513100);科创芯片(588200)",
+      "selected_counts": {
+        "纳指": 25,
+        "能源": 18,
+        "标普500": 13,
+        "通信": 12,
+        "红利": 8,
+        "香港证券": 8,
+        "银行": 7,
+        "新能源车": 6,
+        "科创芯片": 6,
+        "有色金属": 5,
+        "游戏": 5,
+        "港股创新药": 5,
+        "光伏": 4,
+        "软件": 4,
+        "半导体设备": 4,
+        "军工": 3,
+        "房地产": 3,
+        "恒生科技": 3,
+        "证券": 3,
+        "中概互联": 3,
+        "机器人": 3,
+        "半导体": 2,
+        "新能源": 2,
+        "证券保险": 2,
+        "传媒": 2,
+        "稀土": 1,
+        "电池": 1,
+        "工业母机": 1
+      }
+    }
+  ],
+  "benchmarks": {
+    "沪深300": {
+      "start": "2021-07-12",
+      "end": "2026-07-09",
+      "start_equity": 1000000.0,
+      "end_equity": 950045.882194786,
+      "total_return": -0.04995411780521397,
+      "cagr": -0.010214742866213378,
+      "volatility": 0.17812548061092898,
+      "sharpe": 0.02896371059813908,
+      "max_drawdown": -0.38676177997767747,
+      "max_dd_start": "2021-07-22",
+      "max_dd_end": "2024-09-13",
+      "avg_exposure": 1.0,
+      "trading_days": 1210,
+      "yearly": {
+        "2021": -0.03747338150801427,
+        "2022": -0.2127265000193177,
+        "2023": -0.11749016178399652,
+        "2024": 0.16199152479808654,
+        "2025": 0.21189927756255877,
+        "2026": 0.03360924169360402
+      }
+    },
+    "创业板指": {
+      "start": "2021-07-12",
+      "end": "2026-07-09",
+      "start_equity": 999999.9999999999,
+      "end_equity": 1136758.9312994375,
+      "total_return": 0.13675893129943772,
+      "cagr": 0.02601456008785452,
+      "volatility": 0.2945431468836126,
+      "sharpe": 0.23618780693269095,
+      "max_drawdown": -0.5704591188084633,
+      "max_dd_start": "2021-08-04",
+      "max_dd_end": "2024-09-23",
+      "avg_exposure": 1.0,
+      "trading_days": 1210,
+      "yearly": {
+        "2021": -0.06000124478040936,
+        "2022": -0.27795247003224455,
+        "2023": -0.19735446142877755,
+        "2024": 0.15392904866589086,
+        "2025": 0.5546048416843006,
+        "2026": 0.21964152919215074
+      }
+    },
+    "科创50": {
+      "start": "2021-07-12",
+      "end": "2026-07-09",
+      "start_equity": 1000000.0000000001,
+      "end_equity": 1364770.4497349544,
+      "total_return": 0.3647704497349542,
+      "cagr": 0.06429023704700154,
+      "volatility": 0.31138790796527094,
+      "sharpe": 0.36102863343043745,
+      "max_drawdown": -0.5995740679623137,
+      "max_dd_start": "2021-08-04",
+      "max_dd_end": "2024-09-23",
+      "avg_exposure": 1.0,
+      "trading_days": 1210,
+      "yearly": {
+        "2021": -0.12700969649290406,
+        "2022": -0.29677140491871734,
+        "2023": -0.13053239583227028,
+        "2024": 0.17757799476065728,
+        "2025": 0.4070530601990936,
+        "2026": 0.5575134850115078
+      }
+    }
+  },
+  "coverage": [
+    {
+      "code": "512010",
+      "label": "医药",
+      "theme": "医药",
+      "rows": 1800,
+      "start": "2019-01-31",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-20",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512070",
+      "label": "证券保险",
+      "theme": "金融",
+      "rows": 1800,
+      "start": "2019-01-31",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-20",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "513100",
+      "label": "纳指",
+      "theme": "海外",
+      "rows": 1800,
+      "start": "2019-01-31",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-20",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "513500",
+      "label": "标普500",
+      "theme": "海外",
+      "rows": 1800,
+      "start": "2019-01-31",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-20",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159928",
+      "label": "消费",
+      "theme": "消费",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159930",
+      "label": "能源",
+      "theme": "周期",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159940",
+      "label": "金融地产",
+      "theme": "金融",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "510880",
+      "label": "红利",
+      "theme": "红利质量",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512200",
+      "label": "房地产",
+      "theme": "地产基建",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512400",
+      "label": "有色金属",
+      "theme": "周期",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512660",
+      "label": "军工",
+      "theme": "制造",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512800",
+      "label": "银行",
+      "theme": "金融",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512880",
+      "label": "证券",
+      "theme": "金融",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512980",
+      "label": "传媒",
+      "theme": "科技",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "513050",
+      "label": "中概互联",
+      "theme": "海外",
+      "rows": 1800,
+      "start": "2019-02-01",
+      "end": "2026-07-09",
+      "eligible_from": "2020-02-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512480",
+      "label": "半导体",
+      "theme": "科技",
+      "rows": 1716,
+      "start": "2019-06-12",
+      "end": "2026-07-09",
+      "eligible_from": "2020-06-23",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "512170",
+      "label": "医疗",
+      "theme": "医药",
+      "rows": 1713,
+      "start": "2019-06-17",
+      "end": "2026-07-09",
+      "eligible_from": "2020-06-30",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "515880",
+      "label": "通信",
+      "theme": "科技",
+      "rows": 1655,
+      "start": "2019-09-06",
+      "end": "2026-07-09",
+      "eligible_from": "2020-09-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "515650",
+      "label": "消费50",
+      "theme": "消费",
+      "rows": 1615,
+      "start": "2019-11-11",
+      "end": "2026-07-09",
+      "eligible_from": "2020-11-24",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159995",
+      "label": "芯片",
+      "theme": "科技",
+      "rows": 1557,
+      "start": "2020-02-10",
+      "end": "2026-07-09",
+      "eligible_from": "2021-02-22",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "515700",
+      "label": "新能源车",
+      "theme": "新能源",
+      "rows": 1557,
+      "start": "2020-02-10",
+      "end": "2026-07-09",
+      "eligible_from": "2021-02-22",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "513090",
+      "label": "香港证券",
+      "theme": "港股行业",
+      "rows": 1524,
+      "start": "2020-03-26",
+      "end": "2026-07-09",
+      "eligible_from": "2021-04-09",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159992",
+      "label": "创新药",
+      "theme": "医药",
+      "rows": 1514,
+      "start": "2020-04-10",
+      "end": "2026-07-09",
+      "eligible_from": "2021-04-23",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159819",
+      "label": "人工智能",
+      "theme": "科技",
+      "rows": 1401,
+      "start": "2020-09-23",
+      "end": "2026-07-09",
+      "eligible_from": "2021-10-14",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "515790",
+      "label": "光伏",
+      "theme": "新能源",
+      "rows": 1345,
+      "start": "2020-12-18",
+      "end": "2026-07-09",
+      "eligible_from": "2021-12-31",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "516160",
+      "label": "新能源",
+      "theme": "新能源",
+      "rows": 1312,
+      "start": "2021-02-04",
+      "end": "2026-07-09",
+      "eligible_from": "2022-02-24",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "516600",
+      "label": "消费服务",
+      "theme": "消费",
+      "rows": 1301,
+      "start": "2021-02-26",
+      "end": "2026-07-09",
+      "eligible_from": "2022-03-11",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "515230",
+      "label": "软件",
+      "theme": "科技",
+      "rows": 1299,
+      "start": "2021-03-02",
+      "end": "2026-07-09",
+      "eligible_from": "2022-03-15",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159870",
+      "label": "化工",
+      "theme": "周期",
+      "rows": 1298,
+      "start": "2021-03-03",
+      "end": "2026-07-09",
+      "eligible_from": "2022-03-16",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159869",
+      "label": "游戏",
+      "theme": "科技",
+      "rows": 1296,
+      "start": "2021-03-05",
+      "end": "2026-07-09",
+      "eligible_from": "2022-03-18",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "516780",
+      "label": "稀土",
+      "theme": "周期",
+      "rows": 1295,
+      "start": "2021-03-08",
+      "end": "2026-07-09",
+      "eligible_from": "2022-03-21",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "513130",
+      "label": "恒生科技",
+      "theme": "海外",
+      "rows": 1238,
+      "start": "2021-06-01",
+      "end": "2026-07-09",
+      "eligible_from": "2022-06-16",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159745",
+      "label": "建材",
+      "theme": "地产基建",
+      "rows": 1226,
+      "start": "2021-06-18",
+      "end": "2026-07-09",
+      "eligible_from": "2022-07-04",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159755",
+      "label": "电池",
+      "theme": "新能源",
+      "rows": 1222,
+      "start": "2021-06-24",
+      "end": "2026-07-09",
+      "eligible_from": "2022-07-08",
+      "has_5y_raw_history": true
+    },
+    {
+      "code": "159770",
+      "label": "机器人",
+      "theme": "制造",
+      "rows": 1132,
+      "start": "2021-11-08",
+      "end": "2026-07-09",
+      "eligible_from": "2022-11-21",
+      "has_5y_raw_history": false
+    },
+    {
+      "code": "513120",
+      "label": "港股创新药",
+      "theme": "港股行业",
+      "rows": 968,
+      "start": "2022-07-12",
+      "end": "2026-07-09",
+      "eligible_from": "2023-07-25",
+      "has_5y_raw_history": false
+    },
+    {
+      "code": "159667",
+      "label": "工业母机",
+      "theme": "制造",
+      "rows": 898,
+      "start": "2022-10-26",
+      "end": "2026-07-09",
+      "eligible_from": "2023-11-08",
+      "has_5y_raw_history": false
+    },
+    {
+      "code": "588200",
+      "label": "科创芯片",
+      "theme": "科技",
+      "rows": 898,
+      "start": "2022-10-26",
+      "end": "2026-07-09",
+      "eligible_from": "2023-11-08",
+      "has_5y_raw_history": false
+    },
+    {
+      "code": "560580",
+      "label": "电力",
+      "theme": "新能源",
+      "rows": 766,
+      "start": "2023-05-12",
+      "end": "2026-07-09",
+      "eligible_from": "2024-05-28",
+      "has_5y_raw_history": false
+    },
+    {
+      "code": "159516",
+      "label": "半导体设备",
+      "theme": "科技",
+      "rows": 714,
+      "start": "2023-07-27",
+      "end": "2026-07-09",
+      "eligible_from": "2024-08-09",
+      "has_5y_raw_history": false
+    },
+    {
+      "code": "159399",
+      "label": "现金流",
+      "theme": "红利质量",
+      "rows": 332,
+      "start": "2025-02-27",
+      "end": "2026-07-09",
+      "eligible_from": "2026-03-13",
+      "has_5y_raw_history": false
+    }
+  ],
+  "errors": {},
+  "data_note": "Tencent raw day with automatic split/reverse-split price continuity adjustment; dynamic ETF pool with 252 trading-day eligibility gate."
+}
