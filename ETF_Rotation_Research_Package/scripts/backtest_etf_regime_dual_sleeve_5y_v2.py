@@ -22,6 +22,7 @@ import csv
 import datetime as dt
 import importlib.util
 import json
+import os
 import statistics
 import sys
 from pathlib import Path
@@ -31,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SEARCH_SCRIPT = ROOT / "scripts/search_etf_high_return_strategy_5y.py"
 NEIGHBOR_SCRIPT = ROOT / "scripts/search_etf_winner_neighborhood_5y.py"
 REGIME_ENGINE_SCRIPT = ROOT / "scripts/regime_engine_v2.py"
-OUT_DIR = ROOT / "a_stock_daily_workflow/etf_rotation/backtests/regime_dual_sleeve_5y_v2"
+OUT_DIR = Path(os.environ.get("V2_OUT_DIR", str(ROOT / "a_stock_daily_workflow/etf_rotation/backtests/regime_dual_sleeve_5y_v2")))
 
 
 def load_module(name: str, path: Path):
@@ -93,6 +94,20 @@ def percentile_ranks(rows: list[dict[str, Any]], key: str) -> dict[str, float]:
     return {str(row["code"]): idx / (len(ordered) - 1) for idx, row in enumerate(ordered)}
 
 
+def build_rebalance_indices_n(dates: list[str], start_idx: int, trading_day: int) -> set[int]:
+    """Return signal indices whose next trading day is the Nth day of month."""
+    candidates = list(range(start_idx, len(dates) - 1))
+    out = {start_idx}
+    by_month: dict[tuple[int, int], list[int]] = {}
+    for i in candidates:
+        trade_date = dt.date.fromisoformat(dates[i + 1])
+        by_month.setdefault((trade_date.year, trade_date.month), []).append(i)
+    offset = max(1, trading_day) - 1
+    for month in by_month.values():
+        out.add(month[offset] if len(month) > offset else month[-1])
+    return out
+
+
 # ── 进攻 sleeve（同 V1）────────────────────────────────
 def offensive_targets(
     signal_date: str,
@@ -150,6 +165,7 @@ def simulate(
     histories: dict[str, list[dict[str, Any]]],
     start_date: str,
     fee_mult: float = 1.0,
+    end_date: str | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     """
     与 V1 的 simulate 完全相同的接口，唯一区别是强弱判断用 RegimeEngine。
@@ -158,7 +174,7 @@ def simulate(
     dates = v3.common_calendar(histories)
     start_idx = next(i for i, date in enumerate(dates) if date >= start_date)
     start_idx = max(start_idx, 253)
-    rebal_indices = lab.build_rebalance_indices(dates, start_idx, "month_start_3")
+    rebal_indices = build_rebalance_indices_n(dates, start_idx, int(config.get("monthly_trading_day", 3)))
     fee_rate = base.FEE_RATE * fee_mult
 
     # ── 初始化 RegimeEngine ──
@@ -187,6 +203,8 @@ def simulate(
     for i in range(start_idx, len(dates) - 1):
         signal_date = dates[i]
         trade_date = dates[i + 1]
+        if end_date is not None and trade_date > end_date:
+            break
         rebal_day = i in rebal_indices
 
         # ── V2 强弱判断（替代 generic_market_gate_bad）──
@@ -334,6 +352,11 @@ def fmt_pct(value: float) -> str:
     return f"{value * 100:+.2f}%"
 
 
+def configured_model_ids() -> list[str]:
+    raw = os.environ.get("V2_MODEL_IDS", "").strip()
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 def portfolio_metrics(equity: list[dict[str, Any]]) -> dict[str, Any]:
     if not equity:
         return {}
@@ -351,7 +374,7 @@ def main() -> None:
 
     # ── 扩展数据量：V2需要更长的历史（MA120 + 斜率 + 防抖确认）──
     # V1 使用 KLINE_LIMIT=950（约3.8年），V2 提升到 1500（约6年）
-    base.KLINE_LIMIT = max(base.KLINE_LIMIT, 1500)
+    base.KLINE_LIMIT = max(base.KLINE_LIMIT, 2000 if os.environ.get("V2_DATA_START_DATE") else 1500)
 
     # ── 扩展指数池：将港股指数加入数据加载 ──
     base.BENCHMARK_INDEXES = BENCHMARK_INDEXES_V2
@@ -366,8 +389,13 @@ def main() -> None:
     if errors:
         print(f"数据加载错误: {list(errors.keys())}")
     dates = v3.common_calendar(histories)
-    end_date = dates[-1]
-    full_start = (dt.date.fromisoformat(end_date) - dt.timedelta(days=int(365.25 * base.BACKTEST_YEARS))).isoformat()
+    data_end_date = dates[-1]
+    requested_start = os.environ.get("V2_BACKTEST_START_DATE")
+    requested_end = os.environ.get("V2_BACKTEST_END_DATE")
+    full_start = requested_start or (dt.date.fromisoformat(data_end_date) - dt.timedelta(days=int(365.25 * base.BACKTEST_YEARS))).isoformat()
+    full_end = requested_end or data_end_date
+    if full_start < dates[0] or full_end > dates[-1]:
+        raise SystemExit(f"requested backtest range {full_start}..{full_end} is outside loaded data {dates[0]}..{dates[-1]}")
 
     # ── 网格搜索配置 ───────────────────────────────────
 
@@ -386,6 +414,7 @@ def main() -> None:
                                 "defensive_allocation": allocation,
                                 "defensive_filter": filt,
                                 "recovery_mode": recovery,
+                                "monthly_trading_day": int(os.environ.get("V2_MONTHLY_TRADING_DAY", "3")),
                             })
 
     # V2 新增的 regime 参数网格
@@ -423,12 +452,20 @@ def main() -> None:
             config["id"] = "_".join(parts)
             configs.append(config)
 
+    requested_ids = configured_model_ids()
+    if requested_ids:
+        by_id = {config["id"]: config for config in configs}
+        missing = [model_id for model_id in requested_ids if model_id not in by_id]
+        if missing:
+            raise SystemExit(f"V2_MODEL_IDS contains unknown model ids: {missing}")
+        configs = [by_id[model_id] for model_id in requested_ids]
+
     print(f"配置总数: {len(configs)} (sleeve={len(sleeve_configs)} × regime={len(regime_grids)})")
 
     # ── 运行全部回测 ──
     rows: list[dict[str, Any]] = []
     for idx, config in enumerate(configs):
-        equity, trades, signals = simulate(config, histories, full_start)
+        equity, trades, signals = simulate(config, histories, full_start, end_date=full_end)
         metrics = portfolio_metrics(equity)
         rows.append({
             "id": config["id"],
@@ -453,21 +490,24 @@ def main() -> None:
     # ── 压力测试（对 Top 策略） ──
     stress_finalists = {row["id"]: row for row in finalists + safe_finalists}
     stress: list[dict[str, Any]] = []
-    for finalist in stress_finalists.values():
-        for start_date in (full_start, "2022-01-04", "2023-01-03"):
-            for fee_mult in (1.0, 2.0):
-                equity, trades, signals = simulate(finalist["config"], histories, start_date, fee_mult)
-                stress.append({
-                    "id": finalist["id"], "label": finalist["label"],
-                    "metrics": portfolio_metrics(equity),
-                    "trade_count": len(trades),
-                    "fee_mult": fee_mult, "start_date": start_date,
-                })
+    if os.environ.get("V2_NO_STRESS", "0") != "1":
+        for finalist in stress_finalists.values():
+            for start_date in (full_start, "2022-01-04", "2023-01-03"):
+                for fee_mult in (1.0, 2.0):
+                    equity, trades, signals = simulate(finalist["config"], histories, start_date, fee_mult)
+                    stress.append({
+                        "id": finalist["id"], "label": finalist["label"],
+                        "metrics": portfolio_metrics(equity),
+                        "trade_count": len(trades),
+                        "fee_mult": fee_mult, "start_date": start_date,
+                    })
 
     # ── 稳健性汇总 ──
     robust = []
     for finalist in stress_finalists.values():
         cases = [row for row in stress if row["id"] == finalist["id"]]
+        if not cases:
+            continue
         robust.append({
             "full": finalist,
             "median_cagr": statistics.median(row["metrics"]["cagr"] for row in cases),
@@ -556,6 +596,10 @@ def main() -> None:
     summary_path.write_text(summary, encoding="utf-8")
     (OUT_DIR / "dual_sleeve_v2_metrics_latest.json").write_text(
         json.dumps({"rows": [compact(row, "full") for row in rows], "stress": [compact(row, "stress") for row in stress], "errors": errors}, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (OUT_DIR / "v2_model_manifest.json").write_text(
+        json.dumps({"requested_model_ids": requested_ids, "selected_model_ids": [row["id"] for row in rows], "count": len(rows), "stress_enabled": os.environ.get("V2_NO_STRESS", "0") != "1"}, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     print(summary)

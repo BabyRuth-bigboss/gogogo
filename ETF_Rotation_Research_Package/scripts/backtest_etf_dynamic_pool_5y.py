@@ -6,8 +6,10 @@ import datetime as dt
 import importlib.util
 import json
 import math
+import os
 import statistics
 import sys
+import time
 from bisect import bisect_right
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -28,6 +30,9 @@ BACKTEST_YEARS = 5
 COMMISSION_RATE = 0.00005
 SLIPPAGE_RATE = 0.00100
 FEE_RATE = COMMISSION_RATE + SLIPPAGE_RATE
+FETCH_RETRIES = 4
+DATA_START_DATE = os.environ.get("V2_DATA_START_DATE", "")
+DATA_END_DATE = os.environ.get("V2_DATA_END_DATE", "")
 
 
 def load_module(name: str, path: Path):
@@ -152,7 +157,7 @@ def split_adjust_prices(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def fetch_tencent_adjusted_day(sec: str, limit: int = KLINE_LIMIT) -> list[dict[str, Any]]:
     # Use raw "day" and repair ETF split discontinuities. Tencent qfqday currently
     # truncates many ETFs to about 640 rows, while raw day gives enough history.
-    params = urlencode({"param": f"{sec},day,,,{limit},"})
+    params = urlencode({"param": f"{sec},day,{DATA_START_DATE},{DATA_END_DATE},{limit},"})
     url = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?" + params
     req = Request(url, headers={"User-Agent": live.UA, "Referer": "https://gu.qq.com/"})
     with urlopen(req, timeout=15) as resp:
@@ -188,24 +193,42 @@ def fetch_tencent_adjusted_day(sec: str, limit: int = KLINE_LIMIT) -> list[dict[
 
 def fetch_one(item: dict[str, str]) -> tuple[str, list[dict[str, Any]], str | None]:
     code = item["code"]
-    try:
-        return code, fetch_tencent_adjusted_day(tencent_sec(code)), None
-    except Exception as exc:
-        return code, [], str(exc)
+    last_error: Exception | None = None
+    for attempt in range(FETCH_RETRIES):
+        try:
+            rows = fetch_tencent_adjusted_day(tencent_sec(code))
+            if not rows:
+                raise RuntimeError("Tencent returned no daily rows")
+            return code, rows, None
+        except Exception as exc:
+            last_error = exc
+            if attempt + 1 < FETCH_RETRIES:
+                time.sleep(0.5 * (2**attempt))
+    return code, [], str(last_error)
 
 
 def fetch_index_one(key: str, sec: str) -> tuple[str, list[dict[str, Any]], str | None]:
-    try:
-        return key, fetch_tencent_adjusted_day(sec), None
-    except Exception as exc:
-        return key, [], str(exc)
+    last_error: Exception | None = None
+    for attempt in range(FETCH_RETRIES):
+        try:
+            rows = fetch_tencent_adjusted_day(sec)
+            if not rows:
+                raise RuntimeError("Tencent returned no daily rows")
+            return key, rows, None
+        except Exception as exc:
+            last_error = exc
+            if attempt + 1 < FETCH_RETRIES:
+                time.sleep(0.5 * (2**attempt))
+    return key, [], str(last_error)
 
 
 def load_history() -> tuple[dict[str, list[dict[str, Any]]], dict[str, str]]:
     data: dict[str, list[dict[str, Any]]] = {}
     errors: dict[str, str] = {}
     items = live.ETF_UNIVERSE + live.MARKET_WATCH
-    with ThreadPoolExecutor(max_workers=10) as pool:
+    # Tencent occasionally closes concurrent TLS connections with EOF. Keep
+    # concurrency moderate and retry individual symbols with backoff above.
+    with ThreadPoolExecutor(max_workers=6) as pool:
         futures = [pool.submit(fetch_one, item) for item in items]
         futures += [pool.submit(fetch_index_one, key, item["sec"]) for key, item in BENCHMARK_INDEXES.items()]
         for future in as_completed(futures):

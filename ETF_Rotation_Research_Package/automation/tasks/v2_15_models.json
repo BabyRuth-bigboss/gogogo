@@ -1,0 +1,22 @@
+{
+  "name": "V2 15模型月初第5交易日批量回测",
+  "strategy": "docs/strategy_specs/v2_month_start5.md",
+  "skip_stress": true,
+  "models": [
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf2_cool5_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf2_cool5_wr50_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf2_cool5_wr40_ah",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf2_cool10_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf3_cool5_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf3_cool10_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf2_cool10_wr50_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma200_conf2_cool5_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma200_conf3_cool5_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma200_conf2_cool10_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma200_conf3_cool10_wr40_hk",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma200_conf2_cool5_wr50_ah",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma200_conf3_cool5_wr50_ah",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma120_conf2_cool5_wr50_ah",
+    "overseas_rs612_top2_alloc100_ma200_ret12_immediate_ma200_conf2_cool10_wr50_hk"
+  ]
+}
