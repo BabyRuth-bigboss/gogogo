@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .DS_Store
 a_stock_daily_workflow/
+.DS_Store
+automation/runs/
