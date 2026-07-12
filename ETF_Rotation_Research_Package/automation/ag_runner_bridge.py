@@ -84,22 +84,39 @@ def main():
     
     signal_engine_path = VIBE_RUN_DIR / "code" / "signal_engine.py"
     original_signal_engine = patch_rebalance_day(signal_engine_path, monthly_trading_day)
+    timeout_seconds = int(os.environ.get("BACKTEST_TIMEOUT_SECONDS", "1800"))
+    stdout_log = run_dir / "antigravity" / "backtest_stdout.log"
+    print(f"[INFO] Streaming Vibe output to: {stdout_log}")
     try:
-        res = subprocess.run(runner_cmd, cwd=VIBE_ROOT, capture_output=True, text=True)
+        with stdout_log.open("w", encoding="utf-8") as log:
+            process = subprocess.Popen(
+                runner_cmd,
+                cwd=VIBE_ROOT,
+                stdout=log,
+                stderr=subprocess.STDOUT,
+                text=True,
+            )
+            try:
+                res_code = process.wait(timeout=timeout_seconds)
+            except subprocess.TimeoutExpired:
+                process.terminate()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+                res_code = 124
+                print(f"[ERROR] Backtest timed out after {timeout_seconds}s")
     finally:
         signal_engine_path.write_text(original_signal_engine, encoding="utf-8")
         vibe_config_path.write_text(original_vibe_config + "\n", encoding="utf-8")
         print("[INFO] Restored original Vibe config.json")
         print("[INFO] Restored original Vibe signal_engine.py")
-    
-    # Save terminal outputs
-    (run_dir / "antigravity" / "backtest_stdout.log").write_text(res.stdout, encoding="utf-8")
-    (run_dir / "antigravity" / "backtest_stderr.log").write_text(res.stderr, encoding="utf-8")
 
-    if res.returncode != 0:
-        print("[ERROR] Backtest run failed. Stderr output:")
-        print(res.stderr)
-        sys.exit(res.returncode)
+    if res_code != 0:
+        print(f"[ERROR] Backtest failed with exit code {res_code}")
+        print(f"[ERROR] Inspect: {stdout_log}")
+        sys.exit(res_code)
 
     print("[INFO] Backtest run completed successfully. Copying outputs...")
 
