@@ -32,6 +32,7 @@ def main() -> None:
     parser.add_argument("--start-date", required=True)
     parser.add_argument("--end-date", required=True)
     parser.add_argument("--mode", choices=("daily", "monthly", "backtest"), default="backtest")
+    parser.add_argument("--monthly-trading-day", type=int, default=3)
     parser.add_argument("--initial-cash", type=float, default=1_000_000)
     args = parser.parse_args()
 
@@ -40,7 +41,9 @@ def main() -> None:
     for name in ("snapshot", "antigravity", "codex", "comparison"):
         (run_dir / name).mkdir(parents=True, exist_ok=True)
     strategy_path = Path(args.strategy).resolve()
-    card = {"run_id": stamp, "mode": args.mode, "strategy": str(strategy_path), "start_date": args.start_date, "end_date": args.end_date, "initial_cash": args.initial_cash, "root": str(ROOT), "status": "prepared", "rules": {"single_snapshot": True, "signal_uses_prior_close": True, "agent_outputs_are_separate": True}}
+    if not 1 <= args.monthly_trading_day <= 23:
+        raise SystemExit("--monthly-trading-day must be between 1 and 23")
+    card = {"run_id": stamp, "mode": args.mode, "strategy": str(strategy_path), "start_date": args.start_date, "end_date": args.end_date, "initial_cash": args.initial_cash, "monthly_trading_day": args.monthly_trading_day, "root": str(ROOT), "status": "prepared", "rules": {"single_snapshot": True, "signal_uses_prior_close": True, "agent_outputs_are_separate": True}}
     (run_dir / "run_card.json").write_text(json.dumps(card, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "strategy_spec.md").write_text(strategy_path.read_text(encoding="utf-8"), encoding="utf-8")
     (run_dir / "codex_prompt.md").write_text(render_prompt(run_dir / "run_card.json", args.mode), encoding="utf-8")

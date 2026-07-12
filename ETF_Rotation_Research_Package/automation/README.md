@@ -52,3 +52,13 @@ python3 automation/dual_agent_workflow.py \
 ```
 
 Agent 命令必须遵守：只读 `run_card.json`，把输出写入自己的目录，不覆盖快照，不自行重新下载另一份行情。
+
+## 创建一个策略变更任务
+
+例如 V2 改为每月第 5 个交易日：
+
+```bash
+./automation/run_v2_month_start5.sh
+```
+
+任务配置保存在 `automation/tasks/v2_month_start5.json`。桥接脚本只在本次运行期间临时修改 Vibe 的调仓索引，完成后恢复原始 `signal_engine.py`。

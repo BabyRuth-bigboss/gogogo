@@ -1,0 +1,15 @@
+{
+  "task_id": "v2_month_start5",
+  "mode": "backtest",
+  "strategy": "docs/strategy_specs/v2_month_start5.md",
+  "monthly_trading_day": 5,
+  "start_date": "2021-07-12",
+  "end_date": "2026-07-10",
+  "initial_cash": 1000000,
+  "comparison": {
+    "baseline": "v2_month_start3",
+    "compare_signals": true,
+    "compare_trades": true,
+    "compare_metrics": true
+  }
+}
