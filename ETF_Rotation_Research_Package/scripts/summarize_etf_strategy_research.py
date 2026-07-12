@@ -16,6 +16,7 @@ SOURCES = [
     ("双袖月频网格", ROOT / "a_stock_daily_workflow/etf_rotation/backtests/monthly_dual_sleeve_research_2015_2026/dual_sleeve_all_metrics_latest.csv", "label", "full_cagr", "full_max_drawdown", "full_sharpe", "trades", "avg_exposure", "full_total_return"),
     ("双袖因子邻域", ROOT / "a_stock_daily_workflow/etf_rotation/backtests/monthly_dual_sleeve_neighborhood_2015_2026/neighborhood_metrics_latest.csv", "label", "full_cagr", "full_max_drawdown", "full_sharpe", "trades", "avg_exposure", "full_total_return"),
     ("双袖月内紧急退出", ROOT / "a_stock_daily_workflow/etf_rotation/backtests/monthly_dual_sleeve_fast_exit_2015_2026/fast_exit_metrics_latest.csv", "trigger", "cagr", "max_drawdown", "sharpe", "trades", "avg_exposure", "total_return"),
+    ("V5 T0独立复测", ROOT / "a_stock_daily_workflow/etf_rotation/backtests/v5_concentrated_dual_sleeve_t0_2015_2026/v5_t0_metrics_latest.csv", "label", "cagr", "max_drawdown", "sharpe", "trades", "avg_exposure", "total_return"),
 ]
 
 
@@ -87,6 +88,7 @@ def main() -> None:
         "- 目前最强的无杠杆、低回撤候选是：RS36+近120日高点评分、行业Top3按50%/30%/20%、月初调仓、三大指数3/3强市才进攻，弱市在国债/黄金中择强。全期年化16.17%、最大回撤17.07%、Sharpe 0.88。",
         "- 该候选通过成本加倍与四个独立起点窗口检查，但没有达到年化20%的预设目标。因此它是研究候选，不是“目标已达成”的实盘承诺。",
         "- 月内MA60/5日急跌紧急退出在相同行情上显著降低年化且扩大回撤，属于已验证的失败补丁，不纳入候选规则。",
+        "- V5集中Top1的T0独立复测为年化14.23%至16.79%、最大回撤33%至39%，未复现Vibe的24.71%记录，且不符合低回撤约束。",
         "- 要把长期年化推到20%以上，当前无杠杆、月频、现有ETF池的证据不足；下一步应扩充可交易历史ETF池并做严格动态成分验证，或明确允许杠杆/更高频风险退出，两者都需要单独审计。",
         "", f"- 全量排名CSV：`{OUT_DIR / 'all_t0_strategy_metrics_latest.csv'}`", "",
     ])
