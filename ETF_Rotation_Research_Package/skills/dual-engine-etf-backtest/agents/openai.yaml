@@ -1,0 +1,4 @@
+interface:
+  display_name: "双引擎 ETF 回测"
+  short_description: "用 T0 与 T1 两套模型对同一策略和时间区间做可复现回测对照"
+  default_prompt: "使用双引擎回测指定 ETF 策略和时间区间，固定同一行情快照，对比收益、信号、交易和执行差异。"
