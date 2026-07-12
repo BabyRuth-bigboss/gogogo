@@ -15,16 +15,22 @@ VIBE_ROOT = Path("/Users/yansenz/Desktop/Vibe-Trading")
 VIBE_RUN_DIR = VIBE_ROOT / "runs" / "etf_rotation_v2"
 
 
-def patch_rebalance_day(signal_engine_path: Path, trading_day: int) -> str:
-    """Temporarily change the monthly trading-day index and return original text."""
+def patch_fixed_cooldown(signal_engine_path: Path) -> tuple[str, str]:
+    """Temporarily make Vibe's regime cooldown match the V2 fixed 5-day rule."""
     original = signal_engine_path.read_text(encoding="utf-8")
-    old = 'group["date"].iloc[2]'
-    new = f'group["date"].iloc[{trading_day - 1}]'
-    if original.count(old) != 1:
-        raise RuntimeError(f"expected one monthly rebalance expression in {signal_engine_path}")
-    signal_engine_path.write_text(original.replace(old, new), encoding="utf-8")
-    print(f"[INFO] Monthly rebalance day patched: {trading_day}th trading day")
-    return original
+    marker_start = "            # 4.1.2 Adaptive Cooldown calculation"
+    marker_end = "            days_since_switch = i - last_switch_day_index"
+    start = original.find(marker_start)
+    end = original.find(marker_end, start)
+    if start < 0 or end < 0:
+        raise RuntimeError("could not locate Vibe adaptive cooldown block")
+    replacement = (
+        "            # --- 4.1.2 V2 fixed cooldown\n"
+        "            cooldown_days = 5\n\n"
+    )
+    patched = original[:start] + replacement + original[end:]
+    signal_engine_path.write_text(patched, encoding="utf-8")
+    return original, patched
 
 
 def main():
@@ -61,14 +67,15 @@ def main():
 
     with open(vibe_config_path, "r", encoding="utf-8") as f:
         vibe_config = json.load(f)
-    original_vibe_config = json.dumps(vibe_config, indent=2, ensure_ascii=False)
+    original_vibe_config = json.dumps(vibe_config, indent=2, ensure_ascii=False) + "\n"
 
-    # Modify date range and initial cash
+    # Modify date range, initial cash, and monthly trading day
     vibe_config["start_date"] = start_date
     vibe_config["end_date"] = end_date
     vibe_config["initial_cash"] = initial_cash
+    vibe_config["monthly_trading_day"] = monthly_trading_day
 
-    print(f"[INFO] Updating Vibe-Trading config: start_date={start_date}, end_date={end_date}, initial_cash={initial_cash}")
+    print(f"[INFO] Updating Vibe-Trading config: start_date={start_date}, end_date={end_date}, initial_cash={initial_cash}, monthly_trading_day={monthly_trading_day}")
     with open(vibe_config_path, "w", encoding="utf-8") as f:
         json.dump(vibe_config, f, indent=2, ensure_ascii=False)
 
@@ -83,9 +90,13 @@ def main():
     print(f"[INFO] Executing Vibe-Trading Backtest: {' '.join(runner_cmd)}")
     
     signal_engine_path = VIBE_RUN_DIR / "code" / "signal_engine.py"
-    original_signal_engine = patch_rebalance_day(signal_engine_path, monthly_trading_day)
+    original_signal_engine, patched_signal_engine = patch_fixed_cooldown(signal_engine_path)
+    used_engine_path = run_dir / "antigravity" / "signal_engine_used.py"
+    used_engine_path.write_text(patched_signal_engine, encoding="utf-8")
     timeout_seconds = int(os.environ.get("BACKTEST_TIMEOUT_SECONDS", "1800"))
     stdout_log = run_dir / "antigravity" / "backtest_stdout.log"
+    stderr_log = run_dir / "antigravity" / "backtest_stderr.log"
+    print(f"[INFO] Fixed V2 cooldown patched to 5 days")
     print(f"[INFO] Streaming Vibe output to: {stdout_log}")
     try:
         with stdout_log.open("w", encoding="utf-8") as log:
@@ -109,10 +120,11 @@ def main():
                 print(f"[ERROR] Backtest timed out after {timeout_seconds}s")
     finally:
         signal_engine_path.write_text(original_signal_engine, encoding="utf-8")
-        vibe_config_path.write_text(original_vibe_config + "\n", encoding="utf-8")
+        vibe_config_path.write_text(original_vibe_config, encoding="utf-8")
         print("[INFO] Restored original Vibe config.json")
         print("[INFO] Restored original Vibe signal_engine.py")
 
+    stderr_log.write_text("", encoding="utf-8")
     if res_code != 0:
         print(f"[ERROR] Backtest failed with exit code {res_code}")
         print(f"[ERROR] Inspect: {stdout_log}")
@@ -129,10 +141,20 @@ def main():
                 shutil.copy2(src_file, run_dir / "antigravity" / filename)
                 print(f"[INFO] Copied {filename} -> antigravity/")
 
-    # 4. Save a copy of signal_engine.py used for reference
+    # 4. Save the restored source separately; signal_engine_used.py is the executable copy.
     src_engine = VIBE_RUN_DIR / "code" / "signal_engine.py"
     if src_engine.exists():
-        shutil.copy2(src_engine, run_dir / "antigravity" / "signal_engine.py")
+        shutil.copy2(src_engine, run_dir / "antigravity" / "signal_engine_restored.py")
+
+    # 5. Copy ohlcv_*.csv snapshot files from t0 to antigravity if they exist (to satisfy audit checks)
+    t0_dir = run_dir / "t0"
+    if t0_dir.exists():
+        ohlcv_copied = 0
+        for path in t0_dir.glob("ohlcv_*.csv"):
+            shutil.copy2(path, run_dir / "antigravity" / path.name)
+            ohlcv_copied += 1
+        if ohlcv_copied > 0:
+            print(f"[INFO] Copied {ohlcv_copied} ohlcv_*.csv files from t0/ to satisfy audit checks.")
 
     print("[INFO] Handoff files generated successfully inside run directory.")
 

@@ -22,6 +22,7 @@ import csv
 import datetime as dt
 import importlib.util
 import json
+import os
 import statistics
 import sys
 from pathlib import Path
@@ -93,6 +94,20 @@ def percentile_ranks(rows: list[dict[str, Any]], key: str) -> dict[str, float]:
     return {str(row["code"]): idx / (len(ordered) - 1) for idx, row in enumerate(ordered)}
 
 
+def build_rebalance_indices_n(dates: list[str], start_idx: int, trading_day: int) -> set[int]:
+    """Return signal indices whose next trading day is the Nth day of month."""
+    candidates = list(range(start_idx, len(dates) - 1))
+    out = {start_idx}
+    by_month: dict[tuple[int, int], list[int]] = {}
+    for i in candidates:
+        trade_date = dt.date.fromisoformat(dates[i + 1])
+        by_month.setdefault((trade_date.year, trade_date.month), []).append(i)
+    offset = max(1, trading_day) - 1
+    for month in by_month.values():
+        out.add(month[offset] if len(month) > offset else month[-1])
+    return out
+
+
 # ── 进攻 sleeve（同 V1）────────────────────────────────
 def offensive_targets(
     signal_date: str,
@@ -158,7 +173,7 @@ def simulate(
     dates = v3.common_calendar(histories)
     start_idx = next(i for i, date in enumerate(dates) if date >= start_date)
     start_idx = max(start_idx, 253)
-    rebal_indices = lab.build_rebalance_indices(dates, start_idx, "month_start_3")
+    rebal_indices = build_rebalance_indices_n(dates, start_idx, int(config.get("monthly_trading_day", 3)))
     fee_rate = base.FEE_RATE * fee_mult
 
     # ── 初始化 RegimeEngine ──
@@ -386,6 +401,7 @@ def main() -> None:
                                 "defensive_allocation": allocation,
                                 "defensive_filter": filt,
                                 "recovery_mode": recovery,
+                                "monthly_trading_day": int(os.environ.get("V2_MONTHLY_TRADING_DAY", "3")),
                             })
 
     # V2 新增的 regime 参数网格

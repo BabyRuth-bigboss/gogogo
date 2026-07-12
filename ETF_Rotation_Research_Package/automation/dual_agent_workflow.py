@@ -17,7 +17,7 @@ RUNS = ROOT / "automation" / "runs"
 
 
 def render_prompt(card_path: Path, mode: str) -> str:
-    return f"""使用 $dual-engine-etf-backtest 审计本次实验。\n\n运行卡片：{card_path}\n模式：{mode}\n\n要求：\n1. 只读取 run_card.json 和 snapshot，不重新下载第二份行情；\n2. 检查 T0/T1 是否使用同一策略、时间、资产池和成本；\n3. 运行 dual-engine-etf-backtest 的 compare_runs.py；\n4. 对比收益、回撤、Sharpe、信号、成交和第一处分歧；\n5. 将结论写入 codex/dual_comparison.md；\n6. 明确区分已确认、强推断和无法确认。\n"""
+    return f"""使用 $dual-engine-etf-backtest 审计本次实验。\n\n运行卡片：{card_path}\n模式：{mode}\n\n要求：\n1. 读取 run_card.json、t0/ 和 antigravity/；\n2. 检查 T0/T1 是否使用同一策略、时间、资产池和成本；\n3. 运行：python3 skills/dual-engine-etf-backtest/scripts/compare_runs.py --a \"$RUN_DIR/t0\" --b \"$RUN_DIR/antigravity\" --out \"$RUN_DIR/codex\"；\n4. 对比收益、回撤、Sharpe、信号、成交和第一处分歧；\n5. 将结论写入 codex/dual_comparison.md；\n6. 如果行情快照不一致，明确标记为非公平比较；\n7. 明确区分已确认、强推断和无法确认。\n"""
 
 
 def run_command(command: str, run_dir: Path) -> int:

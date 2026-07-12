@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="/Users/yansenz/Documents/project/gogogo/ETF_Rotation_Research_Package"
-export ANTIGRAVITY_CMD="python3 $ROOT/automation/ag_runner_bridge.py"
+export ANTIGRAVITY_CMD="python3 $ROOT/automation/t0_runner_bridge.py && python3 $ROOT/automation/ag_runner_bridge.py"
 export CODEX_CMD="$ROOT/automation/codex_runner_bridge.sh"
 
 cd "$ROOT"
