@@ -1,0 +1,70 @@
+{
+  "a": "/Users/yansenz/Documents/marketing/a_stock_daily_workflow/etf_rotation/backtests/regime_dual_sleeve_5y_v2",
+  "b": "/Users/yansenz/Desktop/Vibe-Trading/agent/runs/etf_v2_ablation/runs/T1_tencent_vibe_execution",
+  "metrics": {
+    "a": {
+      "total_return": 3.5666482900440553,
+      "cagr": 0.35567221730142795,
+      "max_drawdown": -0.2170934156199278,
+      "sharpe": 1.2138010835100692,
+      "final_value": 4463173.167197284,
+      "rows": 1210
+    },
+    "b": {
+      "total_return": 3.1323924163801955,
+      "cagr": 0.24315851538975086,
+      "max_drawdown": -0.23917892857579104,
+      "sharpe": 1.0148716134835738,
+      "final_value": 4132392.416380196,
+      "rows": 1651
+    }
+  },
+  "snapshots": {
+    "a_count": 50,
+    "b_count": 52,
+    "common": 50,
+    "a_only": [],
+    "b_only": [
+      "159960",
+      "510500"
+    ]
+  },
+  "signals": {
+    "available": true,
+    "a_rows": 1210,
+    "b_rows": 1579,
+    "same_keys": 1210,
+    "a_only": 0,
+    "b_only": 369,
+    "first_a_only": [],
+    "first_b_only": [
+      [
+        "2020-01-02"
+      ]
+    ]
+  },
+  "trades": {
+    "available": true,
+    "a_rows": 94,
+    "b_rows": 78,
+    "same_keys": 0,
+    "a_only": 94,
+    "b_only": 78,
+    "first_a_only": [
+      [
+        "2021-07-12",
+        "159995",
+        "BUY",
+        "0.7999"
+      ]
+    ],
+    "first_b_only": [
+      [
+        "2021-07-13",
+        "159995",
+        "BUY",
+        "0.8007"
+      ]
+    ]
+  }
+}
