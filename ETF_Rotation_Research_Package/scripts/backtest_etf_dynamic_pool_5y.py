@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LIVE_SCRIPT = ROOT / "scripts/etf_momentum_rotation.py"
 LAB_SCRIPT = ROOT / "scripts/backtest_etf_strategy_lab.py"
 OUT_DIR = ROOT / "a_stock_daily_workflow/etf_rotation/backtests/dynamic_pool_5y_cost_10bp_slippage"
+CACHE_DIR = Path(os.environ.get("V2_CACHE_DIR", str(ROOT / "a_stock_daily_workflow/etf_rotation/cache/tencent_history")))
 
 INITIAL_CASH = 1_000_000.0
 KLINE_LIMIT = 1800
@@ -154,10 +155,8 @@ def split_adjust_prices(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return out
 
 
-def fetch_tencent_adjusted_day(sec: str, limit: int = KLINE_LIMIT) -> list[dict[str, Any]]:
-    # Use raw "day" and repair ETF split discontinuities. Tencent qfqday currently
-    # truncates many ETFs to about 640 rows, while raw day gives enough history.
-    params = urlencode({"param": f"{sec},day,{DATA_START_DATE},{DATA_END_DATE},{limit},"})
+def _fetch_tencent_window(sec: str, start: str, end: str, limit: int) -> list[dict[str, Any]]:
+    params = urlencode({"param": f"{sec},day,{start},{end},{limit},"})
     url = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?" + params
     req = Request(url, headers={"User-Agent": live.UA, "Referer": "https://gu.qq.com/"})
     with urlopen(req, timeout=15) as resp:
@@ -188,7 +187,39 @@ def fetch_tencent_adjusted_day(sec: str, limit: int = KLINE_LIMIT) -> list[dict[
                 "amount_yi": close * volume * 100 / 100_000_000 if close > 0 and volume > 0 else 0.0,
             }
         )
-    return split_adjust_prices(rows)
+    return rows
+
+
+def fetch_tencent_adjusted_day(sec: str, limit: int = KLINE_LIMIT) -> list[dict[str, Any]]:
+    # Tencent caps a single response near 2000 rows. Split long historical
+    # windows, merge and then apply one continuous split adjustment.
+    cache_key = "_".join([sec, DATA_START_DATE or "latest", DATA_END_DATE or "latest", str(limit)])
+    cache_path = CACHE_DIR / (cache_key.replace("/", "_") + ".json")
+    if cache_path.exists():
+        with cache_path.open("r", encoding="utf-8") as handle:
+            cached = json.load(handle)
+        if isinstance(cached, list) and cached:
+            return split_adjust_prices(cached)
+    if DATA_START_DATE and DATA_END_DATE:
+        start = dt.date.fromisoformat(DATA_START_DATE)
+        end = dt.date.fromisoformat(DATA_END_DATE)
+        if (end - start).days > 2200:
+            windows = [(DATA_START_DATE, "2020-12-31"), ("2021-01-01", DATA_END_DATE)]
+        else:
+            windows = [(DATA_START_DATE, DATA_END_DATE)]
+    else:
+        windows = [(DATA_START_DATE, DATA_END_DATE)]
+    rows: list[dict[str, Any]] = []
+    for start, end in windows:
+        rows.extend(_fetch_tencent_window(sec, start, end, min(limit, 2000)))
+    unique = {row["date"]: row for row in rows}
+    merged = [unique[key] for key in sorted(unique)]
+    if merged:
+        CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        temp_path = cache_path.with_suffix(".tmp")
+        temp_path.write_text(json.dumps(merged, ensure_ascii=False), encoding="utf-8")
+        temp_path.replace(cache_path)
+    return split_adjust_prices(merged)
 
 
 def fetch_one(item: dict[str, str]) -> tuple[str, list[dict[str, Any]], str | None]:

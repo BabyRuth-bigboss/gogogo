@@ -11,10 +11,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-START = "2015-07-01"
-DATA_START = "2014-07-01"
-END = "2021-07-30"
-OUT_DIR = ROOT / "a_stock_daily_workflow/etf_rotation/backtests/historical_strategy_suite_2015_2021"
+START = os.environ.get("HISTORICAL_SUITE_START", "2015-07-01")
+DATA_START = os.environ.get("HISTORICAL_SUITE_DATA_START", "2014-07-01")
+END = os.environ.get("HISTORICAL_SUITE_END", "2021-07-30")
+PERIOD_SLUG = f"{START[:7]}至{END[:7]}"
+OUT_DIR = ROOT / f"a_stock_daily_workflow/etf_rotation/backtests/historical_strategy_suite_{START[:4]}_{END[:4]}"
 NOTE_DIR = Path("/Users/yansenz/Documents/note")
 
 
@@ -73,7 +74,7 @@ def main() -> None:
             "data_errors": len(errors),
         })
 
-    v2_path = ROOT / "a_stock_daily_workflow/etf_rotation/backtests/v2_t0_2015_2021/dual_sleeve_v2_metrics_latest.json"
+    v2_path = Path(os.environ.get("V2_RESULT_PATH", str(ROOT / "a_stock_daily_workflow/etf_rotation/backtests/v2_t0_2015_2021/dual_sleeve_v2_metrics_latest.json")))
     v2_payload = json.loads(v2_path.read_text(encoding="utf-8"))
     for row in v2_payload.get("rows", []):
         rows.append({
@@ -95,7 +96,7 @@ def main() -> None:
     (OUT_DIR / "historical_strategy_metrics.json").write_text(json.dumps({"rows": rows, "errors": errors, "start": START, "end": END, "data_start": DATA_START}, ensure_ascii=False, indent=2), encoding="utf-8")
 
     lines = [
-        "# 2015-07 至 2021-07 历史策略回测对照（T0）",
+        f"# {PERIOD_SLUG} 历史策略回测对照（T0）",
         "",
         f"- 行情预热：{DATA_START} 至 {END}",
         f"- 实际统计：{START} 至 {END}",
@@ -128,7 +129,7 @@ def main() -> None:
     report_path = OUT_DIR / "historical_strategy_summary.md"
     report_path.write_text(report, encoding="utf-8")
     NOTE_DIR.mkdir(parents=True, exist_ok=True)
-    note_path = NOTE_DIR / "历史策略T0回测对照_2015-07至2021-07.md"
+    note_path = NOTE_DIR / f"历史策略T0回测对照_{PERIOD_SLUG}.md"
     note_path.write_text(report, encoding="utf-8")
     print(report)
     print(f"wrote {report_path}")
