@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SEARCH_SCRIPT = ROOT / "scripts/search_etf_high_return_strategy_5y.py"
 NEIGHBOR_SCRIPT = ROOT / "scripts/search_etf_winner_neighborhood_5y.py"
 REGIME_ENGINE_SCRIPT = ROOT / "scripts/regime_engine_v2.py"
-OUT_DIR = ROOT / "a_stock_daily_workflow/etf_rotation/backtests/regime_dual_sleeve_5y_v2"
+OUT_DIR = Path(os.environ.get("V2_OUT_DIR", str(ROOT / "a_stock_daily_workflow/etf_rotation/backtests/regime_dual_sleeve_5y_v2")))
 
 
 def load_module(name: str, path: Path):
@@ -165,6 +165,7 @@ def simulate(
     histories: dict[str, list[dict[str, Any]]],
     start_date: str,
     fee_mult: float = 1.0,
+    end_date: str | None = None,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     """
     与 V1 的 simulate 完全相同的接口，唯一区别是强弱判断用 RegimeEngine。
@@ -202,6 +203,8 @@ def simulate(
     for i in range(start_idx, len(dates) - 1):
         signal_date = dates[i]
         trade_date = dates[i + 1]
+        if end_date is not None and trade_date > end_date:
+            break
         rebal_day = i in rebal_indices
 
         # ── V2 强弱判断（替代 generic_market_gate_bad）──
@@ -371,7 +374,7 @@ def main() -> None:
 
     # ── 扩展数据量：V2需要更长的历史（MA120 + 斜率 + 防抖确认）──
     # V1 使用 KLINE_LIMIT=950（约3.8年），V2 提升到 1500（约6年）
-    base.KLINE_LIMIT = max(base.KLINE_LIMIT, 1500)
+    base.KLINE_LIMIT = max(base.KLINE_LIMIT, 2000 if os.environ.get("V2_DATA_START_DATE") else 1500)
 
     # ── 扩展指数池：将港股指数加入数据加载 ──
     base.BENCHMARK_INDEXES = BENCHMARK_INDEXES_V2
@@ -386,8 +389,13 @@ def main() -> None:
     if errors:
         print(f"数据加载错误: {list(errors.keys())}")
     dates = v3.common_calendar(histories)
-    end_date = dates[-1]
-    full_start = (dt.date.fromisoformat(end_date) - dt.timedelta(days=int(365.25 * base.BACKTEST_YEARS))).isoformat()
+    data_end_date = dates[-1]
+    requested_start = os.environ.get("V2_BACKTEST_START_DATE")
+    requested_end = os.environ.get("V2_BACKTEST_END_DATE")
+    full_start = requested_start or (dt.date.fromisoformat(data_end_date) - dt.timedelta(days=int(365.25 * base.BACKTEST_YEARS))).isoformat()
+    full_end = requested_end or data_end_date
+    if full_start < dates[0] or full_end > dates[-1]:
+        raise SystemExit(f"requested backtest range {full_start}..{full_end} is outside loaded data {dates[0]}..{dates[-1]}")
 
     # ── 网格搜索配置 ───────────────────────────────────
 
@@ -457,7 +465,7 @@ def main() -> None:
     # ── 运行全部回测 ──
     rows: list[dict[str, Any]] = []
     for idx, config in enumerate(configs):
-        equity, trades, signals = simulate(config, histories, full_start)
+        equity, trades, signals = simulate(config, histories, full_start, end_date=full_end)
         metrics = portfolio_metrics(equity)
         rows.append({
             "id": config["id"],

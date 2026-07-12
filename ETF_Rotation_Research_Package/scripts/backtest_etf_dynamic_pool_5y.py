@@ -6,6 +6,7 @@ import datetime as dt
 import importlib.util
 import json
 import math
+import os
 import statistics
 import sys
 import time
@@ -30,6 +31,8 @@ COMMISSION_RATE = 0.00005
 SLIPPAGE_RATE = 0.00100
 FEE_RATE = COMMISSION_RATE + SLIPPAGE_RATE
 FETCH_RETRIES = 4
+DATA_START_DATE = os.environ.get("V2_DATA_START_DATE", "")
+DATA_END_DATE = os.environ.get("V2_DATA_END_DATE", "")
 
 
 def load_module(name: str, path: Path):
@@ -154,7 +157,7 @@ def split_adjust_prices(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def fetch_tencent_adjusted_day(sec: str, limit: int = KLINE_LIMIT) -> list[dict[str, Any]]:
     # Use raw "day" and repair ETF split discontinuities. Tencent qfqday currently
     # truncates many ETFs to about 640 rows, while raw day gives enough history.
-    params = urlencode({"param": f"{sec},day,,,{limit},"})
+    params = urlencode({"param": f"{sec},day,{DATA_START_DATE},{DATA_END_DATE},{limit},"})
     url = "https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?" + params
     req = Request(url, headers={"User-Agent": live.UA, "Referer": "https://gu.qq.com/"})
     with urlopen(req, timeout=15) as resp:
