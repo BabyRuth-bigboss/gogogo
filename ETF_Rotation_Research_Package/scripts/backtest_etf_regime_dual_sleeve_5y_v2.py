@@ -349,6 +349,11 @@ def fmt_pct(value: float) -> str:
     return f"{value * 100:+.2f}%"
 
 
+def configured_model_ids() -> list[str]:
+    raw = os.environ.get("V2_MODEL_IDS", "").strip()
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 def portfolio_metrics(equity: list[dict[str, Any]]) -> dict[str, Any]:
     if not equity:
         return {}
@@ -439,6 +444,14 @@ def main() -> None:
             config["id"] = "_".join(parts)
             configs.append(config)
 
+    requested_ids = configured_model_ids()
+    if requested_ids:
+        by_id = {config["id"]: config for config in configs}
+        missing = [model_id for model_id in requested_ids if model_id not in by_id]
+        if missing:
+            raise SystemExit(f"V2_MODEL_IDS contains unknown model ids: {missing}")
+        configs = [by_id[model_id] for model_id in requested_ids]
+
     print(f"配置总数: {len(configs)} (sleeve={len(sleeve_configs)} × regime={len(regime_grids)})")
 
     # ── 运行全部回测 ──
@@ -469,21 +482,24 @@ def main() -> None:
     # ── 压力测试（对 Top 策略） ──
     stress_finalists = {row["id"]: row for row in finalists + safe_finalists}
     stress: list[dict[str, Any]] = []
-    for finalist in stress_finalists.values():
-        for start_date in (full_start, "2022-01-04", "2023-01-03"):
-            for fee_mult in (1.0, 2.0):
-                equity, trades, signals = simulate(finalist["config"], histories, start_date, fee_mult)
-                stress.append({
-                    "id": finalist["id"], "label": finalist["label"],
-                    "metrics": portfolio_metrics(equity),
-                    "trade_count": len(trades),
-                    "fee_mult": fee_mult, "start_date": start_date,
-                })
+    if os.environ.get("V2_NO_STRESS", "0") != "1":
+        for finalist in stress_finalists.values():
+            for start_date in (full_start, "2022-01-04", "2023-01-03"):
+                for fee_mult in (1.0, 2.0):
+                    equity, trades, signals = simulate(finalist["config"], histories, start_date, fee_mult)
+                    stress.append({
+                        "id": finalist["id"], "label": finalist["label"],
+                        "metrics": portfolio_metrics(equity),
+                        "trade_count": len(trades),
+                        "fee_mult": fee_mult, "start_date": start_date,
+                    })
 
     # ── 稳健性汇总 ──
     robust = []
     for finalist in stress_finalists.values():
         cases = [row for row in stress if row["id"] == finalist["id"]]
+        if not cases:
+            continue
         robust.append({
             "full": finalist,
             "median_cagr": statistics.median(row["metrics"]["cagr"] for row in cases),
@@ -572,6 +588,10 @@ def main() -> None:
     summary_path.write_text(summary, encoding="utf-8")
     (OUT_DIR / "dual_sleeve_v2_metrics_latest.json").write_text(
         json.dumps({"rows": [compact(row, "full") for row in rows], "stress": [compact(row, "stress") for row in stress], "errors": errors}, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (OUT_DIR / "v2_model_manifest.json").write_text(
+        json.dumps({"requested_model_ids": requested_ids, "selected_model_ids": [row["id"] for row in rows], "count": len(rows), "stress_enabled": os.environ.get("V2_NO_STRESS", "0") != "1"}, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     print(summary)

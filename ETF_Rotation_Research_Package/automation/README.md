@@ -62,3 +62,29 @@ Agent 命令必须遵守：只读 `run_card.json`，把输出写入自己的目�
 ```
 
 任务配置保存在 `automation/tasks/v2_month_start5.json`。桥接脚本只在本次运行期间临时修改 Vibe 的调仓索引，完成后恢复原始 `signal_engine.py`。
+
+## V2 15 模型批量回测
+
+一键运行预定义的 15 个 V2 参数模型：
+
+```bash
+./automation/run_v2_15_models.sh
+```
+
+模型清单位于 `automation/tasks/v2_15_models.json`，当前覆盖：
+
+- MA120 / MA200；
+- 弱市确认 2 / 3 日；
+- 冷却 5 / 10 日；
+- 弱市阈值 40% / 50%；
+- 是否加入港股指数。
+
+该流程会先由 T0 批量运行 15 个模型，再由 T1/Antigravity 执行基线回测，最后强制调用 `dual-engine-etf-backtest` 的比较器生成审计报告。每次运行会保存运行卡、模型清单、T0 信号/成交/权益、T1 产物和 Codex 审计。
+
+汇总报告会自动写入：
+
+```text
+/Users/yansenz/Documents/note/ETF_V2_15_MODEL_BACKTEST_LATEST.md
+```
+
+注意：如果行情快照、manifest、哈希或 T1 信号缺失，审计报告会标记为非公平比较；这类结果只能用于诊断，不能直接作为策略优劣结论。

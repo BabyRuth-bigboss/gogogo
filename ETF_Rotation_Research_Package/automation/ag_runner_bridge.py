@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import csv
 import subprocess
 import sys
 from pathlib import Path
@@ -18,6 +19,9 @@ VIBE_RUN_DIR = VIBE_ROOT / "runs" / "etf_rotation_v2"
 def patch_fixed_cooldown(signal_engine_path: Path) -> tuple[str, str]:
     """Temporarily make Vibe's regime cooldown match the V2 fixed 5-day rule."""
     original = signal_engine_path.read_text(encoding="utf-8")
+    fixed_marker = "            # --- 4.1.2 V2 fixed cooldown"
+    if fixed_marker in original:
+        return original, original
     marker_start = "            # 4.1.2 Adaptive Cooldown calculation"
     marker_end = "            days_since_switch = i - last_switch_day_index"
     start = original.find(marker_start)
@@ -90,7 +94,11 @@ def main():
     print(f"[INFO] Executing Vibe-Trading Backtest: {' '.join(runner_cmd)}")
     
     signal_engine_path = VIBE_RUN_DIR / "code" / "signal_engine.py"
-    original_signal_engine, patched_signal_engine = patch_fixed_cooldown(signal_engine_path)
+    try:
+        original_signal_engine, patched_signal_engine = patch_fixed_cooldown(signal_engine_path)
+    except Exception:
+        vibe_config_path.write_text(original_vibe_config, encoding="utf-8")
+        raise
     used_engine_path = run_dir / "antigravity" / "signal_engine_used.py"
     used_engine_path.write_text(patched_signal_engine, encoding="utf-8")
     timeout_seconds = int(os.environ.get("BACKTEST_TIMEOUT_SECONDS", "1800"))
@@ -118,6 +126,9 @@ def main():
                     process.wait()
                 res_code = 124
                 print(f"[ERROR] Backtest timed out after {timeout_seconds}s")
+            except Exception as exc:
+                print(f"[ERROR] Execution failed: {exc}")
+                res_code = 1
     finally:
         signal_engine_path.write_text(original_signal_engine, encoding="utf-8")
         vibe_config_path.write_text(original_vibe_config, encoding="utf-8")
@@ -132,14 +143,57 @@ def main():
 
     print("[INFO] Backtest run completed successfully. Copying outputs...")
 
-    # 3. Copy outputs to runs/antigravity folder
+    # Load T0 equity dates to align dates if present
+    t0_dates = None
+    t0_dir = run_dir / "t0"
+    if t0_dir.exists():
+        t0_equity_matches = list(t0_dir.glob("*equity*.csv"))
+        if t0_equity_matches:
+            t0_equity_file = t0_equity_matches[0]
+            try:
+                with open(t0_equity_file, "r", encoding="utf-8") as f:
+                    reader = csv.DictReader(f)
+                    dc = None
+                    for name in ("timestamp", "signal_date", "trade_date", "date"):
+                        if name in reader.fieldnames:
+                            dc = name
+                            break
+                    if dc:
+                        t0_dates = {row[dc].split(" ")[0] for row in reader if row.get(dc)}
+                        print(f"[INFO] Loaded {len(t0_dates)} target dates from T0: {t0_equity_file.name}")
+            except Exception as exc:
+                print(f"[WARN] Failed to read T0 equity dates for filtering: {exc}")
+
+    # 3. Copy and filter outputs to runs/antigravity folder
     vibe_artifacts = VIBE_RUN_DIR / "artifacts"
     if vibe_artifacts.exists():
         for filename in ("trades.csv", "metrics.json", "equity.csv", "signals.csv"):
             src_file = vibe_artifacts / filename
             if src_file.exists():
-                shutil.copy2(src_file, run_dir / "antigravity" / filename)
-                print(f"[INFO] Copied {filename} -> antigravity/")
+                dest_file = run_dir / "antigravity" / filename
+                if filename == "equity.csv" and t0_dates is not None:
+                    try:
+                        with open(src_file, "r", encoding="utf-8") as f:
+                            reader = csv.DictReader(f)
+                            t1_rows = list(reader)
+
+                        filtered_rows = []
+                        for row in t1_rows:
+                            dt_str = row["timestamp"].split(" ")[0]
+                            if dt_str in t0_dates:
+                                filtered_rows.append(row)
+
+                        with open(dest_file, "w", encoding="utf-8", newline="") as f:
+                            writer = csv.DictWriter(f, fieldnames=reader.fieldnames)
+                            writer.writeheader()
+                            writer.writerows(filtered_rows)
+                        print(f"[INFO] Filtered and copied equity.csv -> antigravity/ ({len(filtered_rows)} of {len(t1_rows)} rows)")
+                    except Exception as exc:
+                        print(f"[WARN] Failed to filter equity.csv: {exc}")
+                        shutil.copy2(src_file, dest_file)
+                else:
+                    shutil.copy2(src_file, dest_file)
+                    print(f"[INFO] Copied {filename} -> antigravity/")
 
     # 4. Save the restored source separately; signal_engine_used.py is the executable copy.
     src_engine = VIBE_RUN_DIR / "code" / "signal_engine.py"
@@ -147,7 +201,6 @@ def main():
         shutil.copy2(src_engine, run_dir / "antigravity" / "signal_engine_restored.py")
 
     # 5. Copy ohlcv_*.csv snapshot files from t0 to antigravity if they exist (to satisfy audit checks)
-    t0_dir = run_dir / "t0"
     if t0_dir.exists():
         ohlcv_copied = 0
         for path in t0_dir.glob("ohlcv_*.csv"):
