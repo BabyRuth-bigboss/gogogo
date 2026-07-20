@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "strategy": "strategy_ensemble_45_40_15",
+  "effective_date": "2026-07-20",
+  "top_level_volatility_overlay": {
+    "observation": "每个完整A股交易日收盘后",
+    "signal_to_execution": "下一交易日开盘",
+    "volatility_window_sessions": 40,
+    "annual_target_volatility": 0.24,
+    "exposure_smoothing_alpha": 0.1,
+    "maximum_exposure": 1.45,
+    "rebalance_band_gross_turnover": 0.03,
+    "rebalance_band_definition": "顶层目标相对当前已执行三策略袖加短融配置的总换手占账户净值；达到或超过3%才生成订单。",
+    "execution": "订单按45%二级动量三袖、40%严格核心、15%稳健三袖的当前已执行篮子同比例缩放；内部策略仅按其各自规则换仓。100份整数手后无法成交的残差保留现金或短融ETF。"
+  }
+}
